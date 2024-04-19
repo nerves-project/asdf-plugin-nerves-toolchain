@@ -1,4 +1,4 @@
-<div align="center">
+<!-- <div align="center"> -->
 
 # asdf-nerves-toolchain [![Build](https://github.com/bjyoungblood/asdf-nerves-toolchain/actions/workflows/build.yml/badge.svg)](https://github.com/bjyoungblood/asdf-nerves-toolchain/actions/workflows/build.yml) [![Lint](https://github.com/bjyoungblood/asdf-nerves-toolchain/actions/workflows/lint.yml/badge.svg)](https://github.com/bjyoungblood/asdf-nerves-toolchain/actions/workflows/lint.yml)
 
@@ -15,9 +15,10 @@
 
 # Dependencies
 
-**TODO: adapt this section**
+<!-- **TODO: adapt this section** -->
 
 - `bash`, `curl`, `tar`, and [POSIX utilities](https://pubs.opengroup.org/onlinepubs/9699919799/idx/utilities.html).
+- [`jq`](https://jqlang.github.io/jq/)
 - `SOME_ENV_VAR`: set this environment variable in your shell config to load the correct version of tool x.
 
 # Install
