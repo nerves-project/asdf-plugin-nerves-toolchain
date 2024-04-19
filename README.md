@@ -1,6 +1,6 @@
 <!-- <div align="center"> -->
 
-# asdf-nerves-toolchain [![Build](https://github.com/bjyoungblood/asdf-nerves-toolchain/actions/workflows/build.yml/badge.svg)](https://github.com/bjyoungblood/asdf-nerves-toolchain/actions/workflows/build.yml) [![Lint](https://github.com/bjyoungblood/asdf-nerves-toolchain/actions/workflows/lint.yml/badge.svg)](https://github.com/bjyoungblood/asdf-nerves-toolchain/actions/workflows/lint.yml)
+# asdf-nerves-toolchain [![Build](https://github.com/bjyoungblood/asdf-plugin-nerves-toolchain/actions/workflows/build.yml/badge.svg)](https://github.com/bjyoungblood/asdf-plugin-nerves-toolchain/actions/workflows/build.yml) [![Lint](https://github.com/bjyoungblood/asdf-plugin-nerves-toolchain/actions/workflows/lint.yml/badge.svg)](https://github.com/bjyoungblood/asdf-plugin-nerves-toolchain/actions/workflows/lint.yml)
 
 [nerves-toolchain](https://github.com/bjyoungblood/asdf-plugin-nerves-toolchain) plugin for the [asdf version manager](https://asdf-vm.com).
 
@@ -18,8 +18,8 @@
 <!-- **TODO: adapt this section** -->
 
 - `bash`, `curl`, `tar`, and [POSIX utilities](https://pubs.opengroup.org/onlinepubs/9699919799/idx/utilities.html).
+- `xz` / `xz-utils`
 - [`jq`](https://jqlang.github.io/jq/)
-- `SOME_ENV_VAR`: set this environment variable in your shell config to load the correct version of tool x.
 
 # Install
 
@@ -34,17 +34,15 @@ asdf plugin add nerves-toolchain https://github.com/bjyoungblood/asdf-nerves-too
 nerves-toolchain:
 
 ```shell
-# Show all installable versions
+# Show all installable versions. Only toolchains compatible with the current OS/arch
+# will be displayed.
 asdf list-all nerves-toolchain
 
 # Install specific version
-asdf install nerves-toolchain latest
+asdf install nerves-toolchain 13.2.0-aarch64-nerves-linux-gnu
 
 # Set a version globally (on your ~/.tool-versions file)
-asdf global nerves-toolchain latest
-
-# Now nerves-toolchain commands are available
-nerves-toolchain --help
+asdf global nerves-toolchain 13.2.0-aarch64-nerves-linux-gnu
 ```
 
 Check [asdf](https://github.com/asdf-vm/asdf) readme for more instructions on how to
