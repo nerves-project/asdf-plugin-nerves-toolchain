@@ -2,7 +2,6 @@
 
 # set -euo pipefail
 
-# TODO: Ensure this is the correct GitHub homepage where releases can be downloaded for nerves-toolchain.
 GH_REPO="nerves-project/toolchains"
 TOOL_NAME="nerves-toolchain"
 
@@ -59,8 +58,6 @@ find_target_release() {
 }
 
 list_all_versions() {
-	# TODO: Adapt this. By default we simply list the tag names from GitHub releases.
-	# Change this function if nerves-toolchain has other means of determining installable versions.
 	list_github_release_assets | jq -r "$JQ_FILTER_VERSIONS | reverse | .[]"
 }
 
@@ -77,16 +74,9 @@ download_release() {
 	# local target_os="${version_parts[3]}"
 	local abi="${version_parts[4]}"
 
-	echo "version: $version"
-	echo "target_arch: $target_arch"
-	echo "vendor: $vendor"
-	echo "abi: $abi"
-
 	# target_release=$(find_target_release "$version" "$target_arch" "$vendor" "$abi" || fail "Could not find release for $version_str")
 	target_release=$(find_target_release "$version" "$target_arch" "$vendor" "$abi")
-	echo "$target_release"
 	url=$(echo "$target_release" | jq -r '.browser_download_url')
-	echo "$url"
 
 	echo "* Downloading $TOOL_NAME release $version_str..."
 	curl "${curl_opts[@]}" -o "$filename" -C - "$url" || fail "Could not download $url"
@@ -115,7 +105,6 @@ install_version() {
 		mkdir -p "$install_path"
 		cp -r "$ASDF_DOWNLOAD_PATH"/* "$install_path"
 
-		# TODO: Assert nerves-toolchain executable exists.
 		local gcc
 		gcc="$target_arch-$vendor-linux-$abi-gcc"
 		test -x "$install_path/bin/$gcc" || fail "Expected $install_path/bin/$gcc to be executable."
