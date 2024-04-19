@@ -13,10 +13,15 @@ jobs:
       matrix:
         os:
           - ubuntu-latest
-          - macos-latest
+          - macos-14
     runs-on: ${{ matrix.os }}
     steps:
+      - name: Install xz-utils (Ubuntu)
+        if: matrix.os == 'ubuntu-latest'
+        run: sudo apt-get update && sudo apt-get install xz-utils
       - name: asdf_plugin_test
-        uses: asdf-vm/actions/plugin-test@v2
+        uses: asdf-vm/actions/plugin-test@v3
         with:
-          command: nerves-toolchain --help
+          plugin: nerves-toolchain
+          version: 13.2.0-aarch64-nerves-linux-gnu
+          command: aarch64-nerves-linux-gnu-gcc --version
