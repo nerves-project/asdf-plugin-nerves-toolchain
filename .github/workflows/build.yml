@@ -23,5 +23,5 @@ jobs:
         uses: asdf-vm/actions/plugin-test@v3
         with:
           plugin: nerves-toolchain
-          version: 13.2.0-aarch64-nerves-linux-gnu
+          version: v13.2.0-aarch64-nerves-linux-gnu
           command: aarch64-nerves-linux-gnu-gcc --version

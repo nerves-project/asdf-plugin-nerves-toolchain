@@ -30,19 +30,39 @@ EOF
 )
 
 fail() {
+	IFS=""
 	echo -e "asdf-$TOOL_NAME: $*"
 	exit 1
 }
 
 curl_opts=(-fsSL)
 
+github_token="${GITHUB_API_TOKEN:-$GITHUB_TOKEN}"
+
 # NOTE: You might want to remove this if nerves-toolchain is not hosted on GitHub releases.
-if [ -n "${GITHUB_API_TOKEN:-}" ]; then
-	curl_opts=("${curl_opts[@]}" -H "Authorization: token $GITHUB_API_TOKEN" -H "Accept: application/vnd.github+json")
+if [ -n "${github_token:-}" ]; then
+	curl_opts=("${curl_opts[@]}" -H "Authorization: token $github_token" -H "Accept: application/vnd.github+json")
 fi
 
 list_github_release_assets() {
-	curl "${curl_opts[@]}" "https://api.github.com/repos/$GH_REPO/releases?per_page=100" | jq -r "$JQ_MAP_RELEASES"
+	releases=$(curl "${curl_opts[@]}" "https://api.github.com/repos/$GH_REPO/releases?per_page=100" 2>&1)
+
+	# shellcheck disable=SC2181
+	if [ $? -eq 0 ]; then
+		echo "$releases" | jq -r "$JQ_MAP_RELEASES"
+	else
+		if [[ $releases == *401 ]]; then
+			fail "Failed to fetch releases from GitHub.\n\n" \
+				"If you have GITHUB_API_TOKEN or GITHUB_TOKEN set, the value must be a valid GitHub API token."
+
+		elif [[ $releases == *403 ]]; then
+			fail "Failed to fetch releases from GitHub.\n\n" \
+				"You may have exceeded the API rate limit. Authenticated requests receive\n" \
+				"a higher rate limit. Try setting GITHUB_API_TOKEN to a valid GitHub API token."
+		fi
+
+		fail "Failed to fetch releases from GitHub."
+	fi
 }
 
 find_target_release() {
@@ -62,20 +82,21 @@ list_all_versions() {
 }
 
 download_release() {
-	local version filename url
-	version_str="$1"
+	local version_str filename version target_arch vendor abi target_release url
+	version_str=$(fix_version "$1")
 	filename="$2"
 
 	IFS='-' read -ra version_parts <<<"$version_str"
 
-	local version="v${version_parts[0]}"
-	local target_arch="${version_parts[1]}"
-	local vendor="${version_parts[2]}"
-	# local target_os="${version_parts[3]}"
-	local abi="${version_parts[4]}"
+	version="${version_parts[0]}"
+	target_arch="${version_parts[1]}"
+	vendor="${version_parts[2]}"
+	# target_os="${version_parts[3]}"
+	abi="${version_parts[4]}"
 
 	# target_release=$(find_target_release "$version" "$target_arch" "$vendor" "$abi" || fail "Could not find release for $version_str")
 	target_release=$(find_target_release "$version" "$target_arch" "$vendor" "$abi")
+
 	url=$(echo "$target_release" | jq -r '.browser_download_url')
 
 	echo "* Downloading $TOOL_NAME release $version_str..."
@@ -83,9 +104,10 @@ download_release() {
 }
 
 install_version() {
-	local install_type="$1"
-	local version_str="$2"
-	local install_path="${3%/bin}"
+	local install_type version_str install_path target_release version target_arch vendor abi
+	install_type="$1"
+	version_str=$(fix_version "$2")
+	install_path="${3%/bin}"
 
 	if [ "$install_type" != "version" ]; then
 		fail "asdf-$TOOL_NAME supports release installs only"
@@ -93,11 +115,11 @@ install_version() {
 
 	IFS='-' read -ra version_parts <<<"$version_str"
 
-	local version="${version_parts[0]}"
-	local target_arch="${version_parts[1]}"
-	local vendor="${version_parts[2]}"
-	# local target_os="${version_parts[3]}"
-	local abi="${version_parts[4]}"
+	version="${version_parts[0]}"
+	target_arch="${version_parts[1]}"
+	vendor="${version_parts[2]}"
+	# target_os="${version_parts[3]}"
+	abi="${version_parts[4]}"
 
 	target_release=$(find_target_release "$version" "$target_arch" "$vendor" "$abi" || fail "Could not find release for $version_str")
 
@@ -114,4 +136,14 @@ install_version() {
 		rm -rf "$install_path"
 		fail "An error occurred while installing $TOOL_NAME $version_str."
 	)
+}
+
+# prepend a v to the version string if it doesn't already have one for
+# cross-compatibility between asdf, rtx, and mise
+fix_version() {
+	local version="$1"
+	if [[ "$version" != v* ]]; then
+		version="v$version"
+	fi
+	echo "$version"
 }

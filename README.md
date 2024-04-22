@@ -39,10 +39,10 @@ nerves-toolchain:
 asdf list-all nerves-toolchain
 
 # Install specific version
-asdf install nerves-toolchain 13.2.0-aarch64-nerves-linux-gnu
+asdf install nerves-toolchain v13.2.0-aarch64-nerves-linux-gnu
 
 # Set a version globally (on your ~/.tool-versions file)
-asdf global nerves-toolchain 13.2.0-aarch64-nerves-linux-gnu
+asdf global nerves-toolchain v13.2.0-aarch64-nerves-linux-gnu
 ```
 
 Check [asdf](https://github.com/asdf-vm/asdf) readme for more instructions on how to
