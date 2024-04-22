@@ -1,8 +1,8 @@
 <!-- <div align="center"> -->
 
-# asdf-nerves-toolchain [![Build](https://github.com/bjyoungblood/asdf-plugin-nerves-toolchain/actions/workflows/build.yml/badge.svg)](https://github.com/bjyoungblood/asdf-plugin-nerves-toolchain/actions/workflows/build.yml) [![Lint](https://github.com/bjyoungblood/asdf-plugin-nerves-toolchain/actions/workflows/lint.yml/badge.svg)](https://github.com/bjyoungblood/asdf-plugin-nerves-toolchain/actions/workflows/lint.yml)
+# asdf-nerves-toolchain [![Build](https://github.com/nerves-project/asdf-plugin-nerves-toolchain/actions/workflows/build.yml/badge.svg)](https://github.com/nerves-project/asdf-plugin-nerves-toolchain/actions/workflows/build.yml) [![Lint](https://github.com/nerves-project/asdf-plugin-nerves-toolchain/actions/workflows/lint.yml/badge.svg)](https://github.com/nerves-project/asdf-plugin-nerves-toolchain/actions/workflows/lint.yml)
 
-[nerves-toolchain](https://github.com/bjyoungblood/asdf-plugin-nerves-toolchain) plugin for the [asdf version manager](https://asdf-vm.com).
+[nerves-toolchain](https://github.com/nerves-project/asdf-plugin-nerves-toolchain) plugin for the [asdf version manager](https://asdf-vm.com).
 
 </div>
 
@@ -27,8 +27,8 @@ Plugin:
 
 ```shell
 asdf plugin add nerves-toolchain
-# or
-asdf plugin add nerves-toolchain https://github.com/bjyoungblood/asdf-nerves-toolchain.git
+# until https://github.com/asdf-vm/asdf-plugins/pull/994 is merged, run this instead:
+asdf plugin add nerves-toolchain https://github.com/nerves-project/asdf-plugin-nerves-toolchain.git
 ```
 
 nerves-toolchain:
@@ -52,8 +52,8 @@ install & manage versions.
 
 Contributions of any kind welcome! See the [contributing guide](contributing.md).
 
-[Thanks goes to these contributors](https://github.com/bjyoungblood/asdf-nerves-toolchain/graphs/contributors)!
+[Thanks goes to these contributors](https://github.com/nerves-project/asdf-plugin-nerves-toolchain/graphs/contributors)!
 
 # License
 
-See [LICENSE](LICENSE) © [Ben Youngblood](https://github.com/bjyoungblood/)
+See [LICENSE](LICENSE).
