@@ -37,10 +37,10 @@ fail() {
 
 curl_opts=(-fsSL)
 
-github_token="${GITHUB_API_TOKEN:-$GITHUB_TOKEN}"
+github_token="${GITHUB_API_TOKEN:-${GITHUB_TOKEN:-}}"
 
 # NOTE: You might want to remove this if nerves-toolchain is not hosted on GitHub releases.
-if [ -n "${github_token:-}" ]; then
+if [ -n "$github_token" ]; then
 	curl_opts=("${curl_opts[@]}" -H "Authorization: token $github_token" -H "Accept: application/vnd.github+json")
 fi
 
