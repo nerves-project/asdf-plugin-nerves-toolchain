@@ -1,14 +1,26 @@
 #!/usr/bin/env bash
 
-# set -euo pipefail
+set -euo pipefail
 
 GH_REPO="nerves-project/toolchains"
 TOOL_NAME="nerves-toolchain"
 
-HOST_ARCH=$(uname -p)
 HOST_OS=$(uname -s | tr '[:upper:]' '[:lower:]')
+HOST_ARCH=$(uname -m)
+HOST_ARCH_PATTERN="^$HOST_ARCH$"
 
-JQ_MAP_RELEASES=$(
+case "$HOST_ARCH" in
+arm | arm64 | aarch64)
+	HOST_ARCH_PATTERN="^(aarch64|arm64|arm)$"
+	;;
+*) ;;
+esac
+
+if [ "$HOST_ARCH" = "arm64" ]; then
+	HOST_ARCH="arm"
+fi
+
+JQ_MAP_AND_FILTER_RELEASES_FOR_HOST=$(
 	cat <<EOF
 [.[] | {
     version: .tag_name,
@@ -16,7 +28,7 @@ JQ_MAP_RELEASES=$(
         filename: .name,
         toolchain: .name | capture("nerves_toolchain_(?<target_arch>[A-Za-z0-9_]+)_(?<vendor>[A-Za-z0-9]+)_linux_(?<abi>[A-Za-z0-9]+)-([0-9\\\\.]+(-rc\\\\.\\\\d+)?\\\\.)?(?<host_os>[A-Za-z0-9]+)[-_](?<host_arch>[A-Za-z0-9_]+)"),
         browser_download_url: .browser_download_url
-    } | select(.toolchain.host_os == "$HOST_OS" and .toolchain.host_arch == "$HOST_ARCH")]
+    } | select(.toolchain.host_os == "$HOST_OS" and (.toolchain.host_arch | test("$HOST_ARCH_PATTERN")))]
 } | select(.toolchains | length > 0)]
 EOF
 )
@@ -31,7 +43,7 @@ EOF
 
 fail() {
 	IFS=""
-	echo -e "asdf-$TOOL_NAME: $*"
+	echo -e "asdf-$TOOL_NAME: $*" >&2
 	exit 1
 }
 
@@ -49,7 +61,12 @@ list_github_release_assets() {
 
 	# shellcheck disable=SC2181
 	if [ $? -eq 0 ]; then
-		echo "$releases" | jq -r "$JQ_MAP_RELEASES"
+		releases=$(echo "$releases" | tr -d '\r\n' | jq -r "$JQ_MAP_AND_FILTER_RELEASES_FOR_HOST")
+		if [ "$releases" = "[]" ]; then
+			fail "No matching toolchains could be found for OS $HOST_OS, arch $HOST_ARCH."
+		else
+			echo "$releases"
+		fi
 	else
 		if [[ $releases == *401 ]]; then
 			fail "Failed to fetch releases from GitHub.\n\n" \
