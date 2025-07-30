@@ -10,7 +10,7 @@ RISC-V and MIPS.
 
 ```sh
 $ asdf install nerves-toolchain v13.2.0-riscv64-nerves-linux-gnu
-$ asdf local nerves-toolchain v13.2.0-riscv64-nerves-linux-gnu
+$ asdf set nerves-toolchain v13.2.0-riscv64-nerves-linux-gnu
 $ riscv64-nerves-linux-gnu-gcc --version
 riscv64-nerves-linux-gnu-gcc (crosstool-NG UNKNOWN) 13.2.0
 Copyright (C) 2023 Free Software Foundation, Inc.
@@ -33,15 +33,17 @@ warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 Nerves toolchain releases are large and hosted on GitHub. It is recommended to
 create a GitHub API token and export it as `GITHUB_API_TOKEN` to avoid
-throttling.
+throttling. For example, if using `gh`:
+
+```shell
+export GITHUB_API_TOKEN=$(gh auth token)
+```
 
 ## Install
 
 Plugin:
 
 ```shell
-asdf plugin add nerves-toolchain https://github.com/nerves-project/asdf-plugin-nerves-toolchain.git
-# Once https://github.com/asdf-vm/asdf-plugins/pull/994 is merged, run this instead:
 asdf plugin add nerves-toolchain
 ```
 
@@ -50,13 +52,13 @@ nerves-toolchain:
 ```shell
 # Show all installable versions. Only toolchains compatible with the current OS/arch
 # will be displayed.
-asdf list-all nerves-toolchain
+asdf list all nerves-toolchain
 
 # Install specific version
 asdf install nerves-toolchain v13.2.0-aarch64-nerves-linux-gnu
 
 # Set a version globally (on your ~/.tool-versions file)
-asdf global nerves-toolchain v13.2.0-aarch64-nerves-linux-gnu
+asdf set -u nerves-toolchain v13.2.0-aarch64-nerves-linux-gnu
 ```
 
 Check [asdf](https://github.com/asdf-vm/asdf) readme for more instructions on
