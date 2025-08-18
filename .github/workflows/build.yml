@@ -25,3 +25,6 @@ jobs:
           plugin: nerves-toolchain
           version: v13.2.0-aarch64-nerves-linux-gnu
           command: aarch64-nerves-linux-gnu-gcc --version
+          # workaround for https://github.com/asdf-vm/actions/issues/599
+          # head_ref for pull requests, ref_name for branches and tags
+          gitref: ${{ github.head_ref || github.ref_name }}
